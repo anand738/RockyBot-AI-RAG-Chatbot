@@ -8,3 +8,8 @@ faiss-cpu
 pypdf
 python-docx
 python-dotenv
+unstructured
+requests
+lxml
+html5lib
+beautifulsoup4
