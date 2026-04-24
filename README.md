@@ -6,7 +6,7 @@ RockyBot is an AI-powered chatbot that allows users to ask questions from **news
 
 ## 🚀 Live Demo
 
-👉 https://your-app-name.streamlit.app
+👉 https://rockybot-ai-rag-chatbot-main.streamlit.app/
 
 ---
 
@@ -89,7 +89,8 @@ GROQ_API_KEY=your_api_key_here
 
 ## 📸 Screenshots
 
-*Add your app screenshot here*
+<img width="1891" height="831" alt="image" src="https://github.com/user-attachments/assets/557f0cae-d1c3-443a-89ef-251a57f4893d" />
+
 
 ---
 
