@@ -6,7 +6,7 @@ import time
 
 from langchain_groq import ChatGroq
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.document_loaders import UnstructuredURLLoader
+from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from pypdf import PdfReader
@@ -83,7 +83,7 @@ if st.sidebar.button("🚀 Process"):
     docs = []
 
     if urls:
-        loader = UnstructuredURLLoader(urls=urls)
+        loader = WebBaseLoader(urls)
         docs.extend(loader.load())
 
     if uploaded_file:
