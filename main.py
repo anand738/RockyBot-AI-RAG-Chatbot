@@ -12,7 +12,7 @@ from langchain_community.vectorstores import FAISS
 from pypdf import PdfReader
 from docx import Document
 
-# ---------------- API KEY (DEPLOY ONLY) ----------------
+# ---------------- API KEY ----------------
 try:
     os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 except:
@@ -22,47 +22,58 @@ except:
 # ---------------- PAGE ----------------
 st.set_page_config(page_title="RockyBot", page_icon="🤖", layout="wide")
 
-# ---------------- CSS ----------------
+# ---------------- CSS (FIXED UI) ----------------
 st.markdown("""
 <style>
+
+/* BACKGROUND */
 body {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
+    background: #343541;
 }
+
+/* CHAT CONTAINER */
 .chat-container {
-    max-width: 850px;
+    max-width: 800px;
     margin: auto;
 }
+
+/* ROW */
+.chat-row {
+    display: flex;
+    margin: 10px 0;
+}
+
+/* ALIGNMENT */
+.user-row {
+    justify-content: flex-end;
+}
+.bot-row {
+    justify-content: flex-start;
+}
+
+/* USER BUBBLE */
 .user-msg {
-    background: #343541;
-    color: #e5e7eb;
+    background: #444654;
+    color: white;
     padding: 10px 14px;
     border-radius: 18px;
-    margin: 6px 0;
-    display: inline-block;
-    max-width: 70%;
-    float: right;
+    max-width: 60%;
 }
+
+/* BOT BUBBLE */
 .bot-msg {
-    background: rgba(255,255,255,0.05);
-    color: #e5e7eb;
+    background: #202123;
+    color: white;
     padding: 10px 14px;
     border-radius: 18px;
-    margin: 6px 0;
-    display: inline-block;
-    max-width: 70%;
-    float: left;
-    border: 1px solid rgba(255,255,255,0.08);
+    max-width: 60%;
 }
-.chat-row::after {
-    content: "";
-    display: block;
-    clear: both;
-}
+
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------- HEADER ----------------
-st.markdown("<h2 style='text-align:center;color:#e5e7eb;'>🤖 RockyBot</h2>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align:center;color:white;'>🤖 RockyBot</h3>", unsafe_allow_html=True)
 
 # ---------------- SIDEBAR ----------------
 st.sidebar.markdown("### 🌐 Add Data")
@@ -103,7 +114,6 @@ if st.sidebar.button("🚀 Process"):
             reader = PdfReader(uploaded_file)
             for page in reader.pages:
                 text += page.extract_text() or ""
-
         else:
             doc = Document(uploaded_file)
             for para in doc.paragraphs:
@@ -154,7 +164,7 @@ if query:
         with open("faiss.pkl", "rb") as f:
             vectorstore = pickle.load(f)
 
-        docs = vectorstore.as_retriever().invoke(query)[:2]
+        docs = vectorstore.as_retriever().invoke(query)[:3]
         context = "\n\n".join([d.page_content for d in docs])
 
         prompt = f"""
@@ -174,10 +184,32 @@ if query:
 # ---------------- DISPLAY ----------------
 st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
 
-for role, msg in st.session_state.chat:
+for i, (role, msg) in enumerate(st.session_state.chat):
+
     if role == "user":
-        st.markdown(f"<div class='chat-row'><div class='user-msg'>{msg}</div></div>", unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="chat-row user-row">
+            <div class="user-msg">{msg}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     else:
-        st.markdown(f"<div class='chat-row'><div class='bot-msg'>🤖 {msg}</div></div>", unsafe_allow_html=True)
+        if i == len(st.session_state.chat) - 1:
+            placeholder = st.empty()
+            typed = ""
+            for char in msg:
+                typed += char
+                placeholder.markdown(f"""
+                <div class="chat-row bot-row">
+                    <div class="bot-msg">🤖 {typed}</div>
+                </div>
+                """, unsafe_allow_html=True)
+                time.sleep(0.002)
+        else:
+            st.markdown(f"""
+            <div class="chat-row bot-row">
+                <div class="bot-msg">🤖 {msg}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
