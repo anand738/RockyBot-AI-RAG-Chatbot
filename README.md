@@ -1,4 +1,4 @@
-# 🤖 RockyBot – AI RAG Chatbot
+# 🤖 RockyBot – AI-powered RAG Assistant 
 
 RockyBot is an AI-powered chatbot that allows users to ask questions from **news articles, PDFs, and Word documents** using Retrieval-Augmented Generation (RAG).
 
